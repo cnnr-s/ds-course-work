@@ -5,13 +5,14 @@ build/
 dist/
 wheels/
 *.egg-info
-.python-version
 
 # Virtual environments
-.venv
+.venv/
 
+# Jupyter
+.ipynb_checkpoints/
 
-# OS
-src/
-pyproject.toml
-uv.lock
+# OS / editor
+.DS_Store
+Thumbs.db
+*.code-workspace
