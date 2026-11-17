@@ -23,3 +23,32 @@ len(distinct_category)
         # 4
 
 
+# task 2 - de-duplicate
+orders = []
+duplicates = []
+seen = set()    # empty set for unique order id signatures
+for o in ORDERS:
+    sig = (o["order_id"])
+    if sig not in seen:
+        seen.add(sig)
+        orders.append(o)
+    else:
+        duplicates.append(o.get('order_id'))
+
+    # unique count
+unique_count = len(orders) # = 84
+len(ORDERS) # = 89
+
+
+    # duplicated ids
+# print(duplicates) = ['SO-1006', 'SO-1023', 'SO-1041', 'SO-1042', 'SO-1071']
+
+    # verify
+first_by_id = {o["order_id"]: o for o in orders}
+
+all_exact = True
+for o in ORDERS:
+    if o["order_id"] in duplicates and o != first_by_id[o["order_id"]]:
+        all_exact == False
+
+# print("Duplicates are exact copies:", all_exact) = True
