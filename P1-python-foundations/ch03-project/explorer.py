@@ -44,11 +44,12 @@ len(ORDERS) # = 89
 # print(duplicates) = ['SO-1006', 'SO-1023', 'SO-1041', 'SO-1042', 'SO-1071']
 
     # verify
-first_by_id = {o["order_id"]: o for o in orders}
+first_by_id = {o["order_id"]: o for o in orders}   # creates a set with each order id as the key for the corresponding row
 
-all_exact = True
-for o in ORDERS:
-    if o["order_id"] in duplicates and o != first_by_id[o["order_id"]]:
-        all_exact == False
+all_exact = all(o == first_by_id[o["order_id"]] for o in ORDERS)   # comprehension checking for all rows in ORDERS eq rows in orders with the same order id
 
 # print("Duplicates are exact copies:", all_exact) = True
+
+
+
+# task 3 - add a derived field without touching raw data
