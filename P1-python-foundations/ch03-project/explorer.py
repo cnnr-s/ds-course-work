@@ -1,4 +1,5 @@
 from orders_data import ORDERS
+import copy
 
 # task 1 - inspect
     # number of raw records
@@ -53,3 +54,13 @@ all_exact = all(o == first_by_id[o["order_id"]] for o in ORDERS)   # comprehensi
 
 
 # task 3 - add a derived field without touching raw data
+
+orders = copy.deepcopy(orders)          # deepcopy copies the list, and the values inside the list as independent
+for o in orders:
+    o["line_total"] = o["qty"] * o["unit_price"]         # creates the new dict item 'line_total' for each order
+
+# check that ORDERS has no 'line_total' with assert
+assert all("line_total" not in r for r in ORDERS)
+assert all("line_total" in o for o in orders)
+
+
