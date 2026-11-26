@@ -1,5 +1,7 @@
 from orders_data import ORDERS
 import copy
+from collections import Counter, defaultdict
+import math
 
 # task 1 - inspect
     # number of raw records
@@ -62,5 +64,47 @@ for o in orders:
 # check that ORDERS has no 'line_total' with assert
 assert all("line_total" not in r for r in ORDERS)
 assert all("line_total" in o for o in orders)
+
+
+# task 4 - revenue by region
+                # creates a grouped dict by region totalling the revenues (calculated column) using defaultdict
+region_revenue = defaultdict(float)
+for o in orders:
+    region_revenue[o["region"]] += o["line_total"]
+
+
+region_revenue = dict(region_revenue)
+highest_revenue = sorted(region_revenue.items(), key = lambda r: r[1], reverse=True)
+
+
+                # tuple list to dict list
+highest_revenue = [{'region': reg, 'revenue': rev} for reg, rev in highest_revenue]
+
+
+                # path B: sum of revenues for each region in the grouped dict
+total_revenue = sum(region_revenue.values())
+
+
+                # derive revenue share proportion column and running revenue share total
+share_percentage_total = 0
+highest_revenue = copy.deepcopy(highest_revenue)            # copies internal values of highest_revenue
+for h in highest_revenue:
+    h['revenue_share'] = h['revenue'] / total_revenue       # calculated column -> regional revenue as a percent of totals
+    share_percentage_total += h['revenue_share']            
+
+
+                # regional totals table construction
+print(f"{'Region':<12}{'Revenue':^10}{'Share':>8}")             # creates table headers
+print('-'*30)           # underline formatting separating values and headers
+for item in highest_revenue:
+    print(f"{item['region']:<12}{round(item['revenue'],2)}{item['revenue_share']:>10,.1%}") # value inputs from dict
+
+print(f"{'Total':<12}{round(total_revenue, 2)}{share_percentage_total:>10,.1%}")        # prints 'totals' row
+
+                # path A: sum of revenues for each order in orders -> from the raw data
+overall_total = sum(o["line_total"] for o in orders)
+
+                # checking if path A and path B provide equal revenue totals -> confirms accurate grouping sums
+assert math.isclose(total_revenue, overall_total)
 
 
