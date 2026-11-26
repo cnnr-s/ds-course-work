@@ -59,7 +59,7 @@ all_exact = all(o == first_by_id[o["order_id"]] for o in ORDERS)   # comprehensi
 
 orders = copy.deepcopy(orders)          # deepcopy copies the list, and the values inside the list as independent
 for o in orders:
-    o["line_total"] = o["qty"] * o["unit_price"]         # creates the new dict item 'line_total' for each order
+    o["line_total"] = round(o["qty"]*o["unit_price"], 2) # creates the new dict item 'line_total' for each order
 
 # check that ORDERS has no 'line_total' with assert
 assert all("line_total" not in r for r in ORDERS)
@@ -97,14 +97,39 @@ for h in highest_revenue:
 print(f"{'Region':<12}{'Revenue':^10}{'Share':>8}")             # creates table headers
 print('-'*30)           # underline formatting separating values and headers
 for item in highest_revenue:
-    print(f"{item['region']:<12}{round(item['revenue'],2)}{item['revenue_share']:>10,.1%}") # value inputs from dict
+    print(f"{item['region']:<12}{item['revenue']:>10,.2f}{item['revenue_share']:>10,.1%}") # value inputs from dict
 
-print(f"{'Total':<12}{round(total_revenue, 2)}{share_percentage_total:>10,.1%}")        # prints 'totals' row
+print(f"{'Total':<12}{total_revenue:>10,.2f}{share_percentage_total:>10,.1%}")        # prints 'totals' row
 
                 # path A: sum of revenues for each order in orders -> from the raw data
 overall_total = sum(o["line_total"] for o in orders)
 
                 # checking if path A and path B provide equal revenue totals -> confirms accurate grouping sums
 assert math.isclose(total_revenue, overall_total)
+
+
+
+# task 5 - top products
+
+    # grouped orders dict by product
+product_revenue = defaultdict(float)
+product_qty = defaultdict(int)
+for o in orders:
+    product_revenue[o["product"]] += o["line_total"]
+    product_qty[o["product"]] += o["qty"]
+
+    # each sorted dict split into top 5
+top_revenue = sorted(product_revenue.items(), key = lambda r: (-r[1], r[0]))[:5]
+top_qty = sorted(product_qty.items(), key = lambda r: (-r[1], r[0]))[:5]
+
+    # top 5 products sold (by revenue)
+print("\nTop 5 Revenue Drivers By Product")
+for i, (prod,rev) in enumerate(top_revenue, start = 1):
+    print(f"{i}. {prod:<16} ${rev:>10,.2f}")
+
+    # top 5 products sold (by volume)
+print("\nTop 5 Products by Quantity Sold")
+for i, (prod, quantity) in enumerate(top_qty, start = 1):
+    print(f"{i}. {prod:<25} {quantity:>3}")
 
 
