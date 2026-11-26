@@ -133,3 +133,14 @@ for i, (prod, quantity) in enumerate(top_qty, start = 1):
     print(f"{i}. {prod:<25} {quantity:>3}")
 
 
+
+# task 6 - monthly trends
+
+    # count orders per month
+monthly_counts = Counter(o["date"][:7] for o in orders).items()
+
+
+    # printed months in calendar order with bar graph
+print("\nMonthly Order Volumes")
+for month, count in monthly_counts:
+    print(f"{month} {'#' * count} {count}")
