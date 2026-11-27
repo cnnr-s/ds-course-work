@@ -144,3 +144,41 @@ monthly_counts = Counter(o["date"][:7] for o in orders).items()
 print("\nMonthly Order Volumes")
 for month, count in monthly_counts:
     print(f"{month} {'#' * count} {count}")
+
+
+
+# task 7 - cross-sell targets
+    # dict -> {customer1: {category 1, category 2, ...}, customer2: {category 1, category 2, ...}...}
+
+customer_categories = defaultdict(set)      # creates an empty set for order rows to fall in
+for o in orders:        # each o in orders is a dictionary
+    customer_categories[o["customer"]].add(o["category"])
+# o['customer'] references the customer key in row o
+# .add(o['catgeory']) makes the customer key values a set of all unique categories associated with that key
+
+
+    # customers who bought from 2 or more categories
+print("\nCustomers Who Bought From 2 or More Categories")
+for customer, cats in sorted(customer_categories.items()):
+    if len(cats) >= 2:
+        print(f"{customer:<20}{len(cats):>4}")
+
+    # customers who bought from every category that appears in the data
+print("\nCustomers Who Bought From All Categories")
+for customer, cats in sorted(customer_categories.items()):
+    if distinct_category <= cats:
+        print(customer)
+
+
+    # customers who bought technology but never furniture
+tech_customers = {customer for customer, cats in customer_categories.items() if "Technology" in cats}
+furniture_customers = {customer for customer, cats in customer_categories.items() if "Furniture" in cats}
+
+print("\nCustomers That Bought Technology But Never Furniture")
+for customer in sorted(tech_customers - furniture_customers):           # set operator A not B
+    print(customer)
+
+
+
+
+
